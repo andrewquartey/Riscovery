@@ -17,6 +17,10 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 public class LoginView extends JDialog{
 		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 874725266061579905L;
 	private JTextField username;
 	private JPasswordField password;
 	private JLabel usernameLabel, passwordLabel;
@@ -48,14 +52,14 @@ public class LoginView extends JDialog{
 		
 		passwordLabel = new JLabel("Password: ");
 		c.gridx = 0;
-		c.gridy = 2;
+		c.gridy = 1;
 		c.insets = new Insets(10,0,0,0);
 		c.gridwidth = 1;
 		panel.add(passwordLabel, c);
 		
 		password = new JPasswordField(20);
 		c.gridx = 1;
-		c.gridy = 2;
+		c.gridy = 1;
 		c.insets = new Insets(10,20,0,10);
 		c.gridwidth = 2;
 		panel.add(password, c);
@@ -72,6 +76,7 @@ public class LoginView extends JDialog{
 		pack();
 		setResizable(false);
 		setLocationRelativeTo(null);
+		setVisible(true);
 		
 	}
 	
@@ -89,6 +94,6 @@ public class LoginView extends JDialog{
 				}
 				
 		LoginView login = new LoginView();		
-		login.setVisible(true);
+		login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }
