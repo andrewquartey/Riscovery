@@ -160,7 +160,12 @@ public class ApplicationView extends JFrame implements View{
 	}
 		
 	public JScrollPane createTable(){			
-		final JTable table = new JTable(model);
+		final JTable table = new JTable(model){  				
+		      public boolean isCellEditable(int row, int column){  			//prevents editing of cells
+		          return false;  
+		        }  
+		      }; 
+		table.getTableHeader().setReorderingAllowed(false);   //prevents reordering of columns
 	    table.setRowSorter(sorter);	    
 		table.setFont(new Font("Cambria", Font.PLAIN, 18));
 		JScrollPane scrollPane = new JScrollPane(table);
