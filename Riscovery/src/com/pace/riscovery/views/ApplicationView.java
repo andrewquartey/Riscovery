@@ -28,6 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -167,11 +168,27 @@ public class ApplicationView extends JFrame implements View{
 		      }; 
 		table.getTableHeader().setReorderingAllowed(false);   //prevents reordering of columns
 	    table.setRowSorter(sorter);	    
-		table.setFont(new Font("Cambria", Font.PLAIN, 18));
+		table.setFont(new Font("Cambria", Font.PLAIN, 14));
 		JScrollPane scrollPane = new JScrollPane(table);
 		table.setAutoCreateRowSorter(true);
 		table.setPreferredScrollableViewportSize(new Dimension(1500, 600));
         table.setFillsViewportHeight(true);
+        //set Table Column width
+        
+        TableColumn column = null;
+        for (int i = 0; i < 5; i++) {
+            column = table.getColumnModel().getColumn(i);
+            if (i == 0 ) {
+                column.setPreferredWidth(10); //third column is bigger
+            } else if (i == 4){
+                column.setPreferredWidth(200);
+            }
+            else {
+            	column.setPreferredWidth(50);
+            }
+            
+        }
+        
 		return scrollPane;
 	}
 	
