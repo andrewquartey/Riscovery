@@ -60,4 +60,8 @@ public class MotorHelper {
 		}
 		return motors;
 	}
+	
+//	public String getName(){
+//		return "Motor";
+//	}
 }
