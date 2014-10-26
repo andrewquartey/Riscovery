@@ -1,13 +1,14 @@
 package com.pace.riscovery.views;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 
 import javax.swing.AbstractAction;
@@ -19,8 +20,10 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
@@ -42,7 +45,8 @@ public class ApplicationView extends JFrame implements View{
 	
 	Logic logic;
 			    
-	private Action openAction, importAction, exitAction;
+	private Action openAction, importAction, exitAction, editAction, addAction, deleteAction;
+//	private TableAction ;
 //	private JButton button1, button2;	
 	final JTextField filterText = new JTextField(20);
 	
@@ -55,9 +59,159 @@ public class ApplicationView extends JFrame implements View{
 	    {"1", "Smith",
 	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "Motor", "EIC", "DMC001", "12/10/2014", "17/10/2014",
 	     new Double(1200.95), new Double(133.67), new Double(42)},
-	     {"1", "Lobo",
+	     {"2", "Lobo",
 	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-	     new Double(1200.95), new Double(133.67), new Double(42)}
+	     new Double(1200.95), new Double(133.67), new Double(42)},
+	     {"3", "Lobo",
+	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+	     new Double(1200.95), new Double(133.67), new Double(42)},
+	     {"4", "Lobo",
+	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+	     new Double(1200.95), new Double(133.67), new Double(42)},
+	     {"5", "Lobo",
+	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+	     new Double(1200.95), new Double(133.67), new Double(42)},
+	     {"6", "Lobo",
+	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+	     new Double(1200.95), new Double(133.67), new Double(42)},
+	     {"7", "Lobo",
+	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+	     new Double(1200.95), new Double(133.67), new Double(42)},
+	     {"8", "Lobo",
+	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+	     new Double(1200.95), new Double(133.67), new Double(42)},
+	     {"9", "Lobo",
+	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+	     new Double(1200.95), new Double(133.67), new Double(42)},
+	     {"10", "Lobo",
+	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"1", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)}
 //	    {"John", "Doe",
 //	     "Rowing", new Integer(3), new Boolean(true)},
 //	    {"Sue", "Black",
@@ -80,6 +234,7 @@ public class ApplicationView extends JFrame implements View{
 	      }
 	    };
 	final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+	JTable table = new JTable();
 	
 	public ApplicationView(){
 		initActions();	
@@ -96,11 +251,27 @@ public class ApplicationView extends JFrame implements View{
 		GridBagConstraints c = new GridBagConstraints();
 		JPanel leftPanel = new JPanel(new GridBagLayout());
 		DefaultListModel<String> model = new DefaultListModel<String>();
-		model.addElement("Motor");
-		model.addElement("House");		
+		model.addElement("MOTOR");
+		model.addElement("HOME & PERSONAL ASSETS");		
+		model.addElement("ASSETS ALL RISKS");
+		model.addElement("WORKMEN'S COMPENSATION");
+	    model.addElement("BUSINESS COMBINED");
+		model.addElement("HOME OWNERS LIABILITY");
+		model.addElement("FIDELITY GUARANTEE");
+		model.addElement("PROFESSIONAL INDEMNITY");
+		model.addElement("GOODS IN TRANSIT");
+		model.addElement("EMPLOYER'S LIABIITY");
+		model.addElement("PUBLIC LIABILITY");
+		model.addElement("FOREIGN TRAVEL");
+		model.addElement("PLANT AND MACHINERY");
+		model.addElement("PROFESSIONAL INDEMNITY");
+		model.addElement("FIRE & ALLIED PERILS");
+		model.addElement("HOTEL ALL RISK");
+		model.addElement("FIRE");
 		JList<String> list = new JList<String>(model);
 		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		list.setVisibleRowCount(-1);
+		list.setFont(new Font("Cambria", Font.PLAIN, 14));
 		JScrollPane listScroller = new JScrollPane(list);
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
@@ -109,7 +280,7 @@ public class ApplicationView extends JFrame implements View{
 		leftPanel.add(listScroller, c);
 		
 		JButton button;
-		//Right componen		
+		//Right component		
 		JPanel rightPanel = new JPanel(new BorderLayout());		
 		button = createButton1();		
 		JPanel lowerPanel = new JPanel();
@@ -121,14 +292,16 @@ public class ApplicationView extends JFrame implements View{
 
 		lowerPanel.add(button);
 				
-		JScrollPane scrollPane = createTable();
+		JScrollPane scrollPane = createTable();		
 		rightPanel.add(scrollPane, BorderLayout.CENTER);		
 		rightPanel.add(lowerPanel, BorderLayout.PAGE_END);
+		
 		
 		split.setLeftComponent(leftPanel);
 		split.setRightComponent(rightPanel);
 		add(split);
-		setSize(1000,400);
+//		setSize(1000,400);
+		pack();
 	}
 
 	private void initToolbar() {
@@ -161,34 +334,74 @@ public class ApplicationView extends JFrame implements View{
 	}
 		
 	public JScrollPane createTable(){			
-		final JTable table = new JTable(model){  				
-		      public boolean isCellEditable(int row, int column){  			//prevents editing of cells
-		          return false;  
-		        }  
-		      }; 
+			  table = new JTable(model);//{  				
+//		      public boolean isCellEditable(int row, int column){  			//prevents editing of cells
+//		          return false;  
+//		        }  
+//		      }; 
 		table.getTableHeader().setReorderingAllowed(false);   //prevents reordering of columns
 	    table.setRowSorter(sorter);	    
 		table.setFont(new Font("Cambria", Font.PLAIN, 14));
-		JScrollPane scrollPane = new JScrollPane(table);
-		table.setAutoCreateRowSorter(true);
-		table.setPreferredScrollableViewportSize(new Dimension(1500, 600));
-        table.setFillsViewportHeight(true);
+		
+		table.setAutoCreateRowSorter(true);		
+//        table.setFillsViewportHeight(true);
         //set Table Column width
         
         TableColumn column = null;
         for (int i = 0; i < 5; i++) {
             column = table.getColumnModel().getColumn(i);
             if (i == 0 ) {
-                column.setPreferredWidth(10); //third column is bigger
-            } else if (i == 4){
+                column.setPreferredWidth(30); //third column is bigger
+            } 
+            else if (i == 4){
                 column.setPreferredWidth(200);
             }
-            else {
-            	column.setPreferredWidth(50);
+            else if(i == 3){
+            	column.setPreferredWidth(140);
             }
-            
+            else if(i == 6){
+            	column.setPreferredWidth(60);
+            }
+            else {
+            	column.setPreferredWidth(90);
+            }            
         }
         
+        //add right click features
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                int r = table.rowAtPoint(e.getPoint());
+                if (r >= 0 && r < table.getRowCount()) {
+                    table.setRowSelectionInterval(r, r);
+                } else {
+                    table.clearSelection();
+                }
+
+                int rowindex = table.getSelectedRow();
+                if (rowindex < 0)
+                    return;
+                if (e.isPopupTrigger() && e.getComponent() instanceof JTable ) {
+                    JPopupMenu popup = new JPopupMenu();
+                    JMenuItem Edit = new JMenuItem("Edit");                    
+                    JMenuItem addClient = new JMenuItem("Add New Client");
+                    JMenuItem delete = new JMenuItem("Delete Client");
+                    Edit.addActionListener(editAction);
+                    addClient.addActionListener(addAction);
+                    delete.addActionListener(deleteAction);
+                    popup.add(Edit);
+                    popup.add(addClient);
+                    popup.add(delete);
+                    popup.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
+//        table.setPreferredSize(arg0)
+//        table.setPreferredScrollableViewportSize(getPreferredSize());
+        JScrollPane scrollPane = new JScrollPane(table);//, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_ALWAYS);
+//        scrollPane.setPreferredSize(new Dimension(1200,300));
+//        scrollPane.setPreferredSize(table.getPreferredScrollableViewportSize());
+//        scrollPane.setHorizontalScrollBarPolicy(1);
 		return scrollPane;
 	}
 	
@@ -204,8 +417,7 @@ public class ApplicationView extends JFrame implements View{
 	        }
 	      }
 	    });
-	return button;
-		
+	return button;		
 	}
 	
 	private void initMenu(){
@@ -226,13 +438,14 @@ public class ApplicationView extends JFrame implements View{
 	private void initActions(){
 		//openAction is an holds an AbstractAction object
 		openAction = new AbstractAction("Open"){  			
-		private static final long serialVersionUID = 1L;
+		
+			private static final long serialVersionUID = -486693816522683076L;
 
-		@Override
-		//This is executed when menuItem1 is clicked
-		public void actionPerformed(ActionEvent e) {   
-			getLogic().onOpen();
-			}
+			@Override
+			//This is executed when menuItem1 is clicked
+			public void actionPerformed(ActionEvent e) {   
+				getLogic().onOpen();
+				}
 		};
 		
 		exitAction = new AbstractAction("Exit"){
@@ -242,6 +455,49 @@ public class ApplicationView extends JFrame implements View{
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub				
 			}			
+		};
+		
+		editAction = new AbstractAction(){
+			
+			private static final long serialVersionUID = 328174414077464627L;
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {			
+//				table.setColumnSelectionAllowed(true);
+//			    table.setRowSelectionAllowed(true);
+		
+				int row = table.getSelectedRow();
+				int col = table.getSelectedColumn();	
+				table.editCellAt(row, col);
+//			    if (success) {
+//			      boolean toggle = false;
+//			      boolean extend = false;
+//			      table.changeSelection(row, col, toggle, extend);
+//			    }
+			}													
+		};
+		
+		deleteAction = new AbstractAction(){
+			
+			private static final long serialVersionUID = -2465981498379904234L;
+			@Override
+			public void actionPerformed(ActionEvent arg0) {				
+				int selectedRow = table.getSelectedRow();
+				if(selectedRow != -1){
+					((DefaultTableModel) table.getModel()).removeRow(selectedRow);
+				}
+			}			
+		};
+		
+		addAction = new AbstractAction(){
+
+			private static final long serialVersionUID = -6007734049543677139L;
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+					((DefaultTableModel) table.getModel()).addRow(new Object[]{});	
+			}
+			
 		};
 	}
 	
