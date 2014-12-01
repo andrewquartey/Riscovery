@@ -15,7 +15,7 @@ import com.mysql.jdbc.Statement;
 
 public class Motor {
 	
-	private int id = -1;
+	private int id = -1;  // if an id is -1 it means entry does not exit so then we save rather than update
 	private  String insured;
 	private  String contact;
 	private  String email;
@@ -24,11 +24,10 @@ public class Motor {
 	private  String insurer;
 	private  String policyNo;
 	private  String commencementDate;
-	private  String expiryDate;		//Remembeer to change datatype for all the other databases from DateTime to VARCHAR
+	private  String expiryDate;		//Remember to change datatype for all the other databases from DateTime to VARCHAR
 	private  float premiumCharged;
 	private  float paid;
-//	private  float balance;
-
+	
 	public void setId(int id){
 		this.id = id;
 	}
@@ -129,14 +128,12 @@ public class Motor {
  	public float getBalance(){
  		return (premiumCharged - paid);
  	}
-
  	
  	// This method both saves it it is the first time and updates if changes are to be made to existing entries
  	public void save() throws SQLException  {
  		try(Connection connection = DBHelper.getConnection()){
-// 			if(id == -1){
-		 		String sql = "INSERT INTO Motor VALUES (default, ?,?,?,?,?,?,?,?,?,?,?)";
-								
+ 			if(id == -1){
+		 		String sql = "INSERT INTO Motor VALUES (default, ?,?,?,?,?,?,?,?,?,?,?)";								
 					try(PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {//generated id will be useful in this code
 					
 						pstmt.setString(1, insured);
@@ -150,23 +147,42 @@ public class Motor {
 						pstmt.setString(9, expiryDate);
 						pstmt.setFloat(10, premiumCharged);
 						pstmt.setFloat(11, paid);
-						pstmt.executeUpdate();
+						pstmt.execute();
 						System.out.println("inside save()");						
 //						pstmt.close();
-						
-						
+												
 						// This code is generating keys
 						try(ResultSet rs = pstmt.getGeneratedKeys()) {
 							rs.next();
 							id = rs.getInt(1);							
 						}
 				}
-// 			}
-// 			
-// 			else {
-// 				//TODO: Update code goes here
-// 			}
+ 			} 			
+ 			else {
+ 				//TODO: Update code goes here
+ 				String sql = "UPDATE motor SET  insured=? , contact=?, email=?, postalAddress=?, cover=?, insurer=?, policyNo=?," +
+ 						"commDate=?, expiryDate=?, premCharged=?, premPaid=? WHERE idMotor=?";
+ 				try(PreparedStatement pstmt = connection.prepareStatement(sql)) {
+					
+					pstmt.setString(1, insured);
+					pstmt.setString(2, contact);
+					pstmt.setString(3, email);
+					pstmt.setString(4, postalAddress);
+					pstmt.setString(5, cover);
+					pstmt.setString(6, insurer);
+					pstmt.setString(7, policyNo);
+					pstmt.setString(8, commencementDate);
+					pstmt.setString(9, expiryDate);
+					pstmt.setFloat(10, premiumCharged);
+					pstmt.setFloat(11, paid);
+					pstmt.setInt(12, id);
+					pstmt.execute();
+ 				}
+ 			}
  		}
  	}
 
+ 	public void delete() throws SQLException {
+ 		//TODO: work on this next!!
+ 	}
 }
