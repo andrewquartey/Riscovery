@@ -7,13 +7,14 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -28,13 +29,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
+import javax.swing.KeyStroke;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 
+import com.pace.riscovery.Motor;
+import com.pace.riscovery.MotorHelper;
 import com.pace.riscovery.MyRunnable;
 import com.pace.riscovery.Logic.Logic;
 
@@ -45,47 +47,25 @@ public class ApplicationView extends JFrame implements View{
 	
 	Logic logic;
 			    
-	private Action openAction, importAction, exitAction, editAction, addAction, deleteAction;
+	private Action openAction, importAction, exitAction, editAction, addAction, deleteAction, enterAction;
 //	private TableAction ;
 //	private JButton button1, button2;	
-	final JTextField filterText = new JTextField(20);
+	final JTextField filterText = new JTextField(20);	
 	
 	private String[] columnNames = {"NO.", "INSURED", "CONTACT",
         "EMAIL ADD.", "POSTAL ADD.", "COVER", "INSURER", "POLICY NO",
         "COMM. DATE", "EXP. DATE", "PREM. CHARGED", "PREM. PAID", "PREM. O/S"
         };
-
+	
+	//row contents	
 	private Object[][] data = {
 	    {"1", "Smith",
 	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "Motor", "EIC", "DMC001", "12/10/2014", "17/10/2014",
 	     new Double(1200.95), new Double(133.67), new Double(42)},
-	     {"2", "Lobo",
-	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-	     new Double(1200.95), new Double(133.67), new Double(42)},
-	     {"3", "Lobo",
-	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-	     new Double(1200.95), new Double(133.67), new Double(42)},
-	     {"4", "Lobo",
-	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-	     new Double(1200.95), new Double(133.67), new Double(42)},
-	     {"5", "Lobo",
-	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-	     new Double(1200.95), new Double(133.67), new Double(42)},
-	     {"6", "Lobo",
-	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-	     new Double(1200.95), new Double(133.67), new Double(42)},
-	     {"7", "Lobo",
-	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-	     new Double(1200.95), new Double(133.67), new Double(42)},
-	     {"8", "Lobo",
-	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-	     new Double(1200.95), new Double(133.67), new Double(42)},
-	     {"9", "Lobo",
-	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-	     new Double(1200.95), new Double(133.67), new Double(42)},
-	     {"10", "Lobo",
-	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-	     new Double(1200.95), new Double(133.67), new Double(42)},
+//	     {"2", "Lobo",
+//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
+//	     new Double(1200.95), new Double(133.67), new Double(42)},
+//
 //	     {"1", "Lobo",
 //	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
 //	     new Double(1200.95), new Double(133.67), new Double(42)},
@@ -95,123 +75,6 @@ public class ApplicationView extends JFrame implements View{
 //	     {"1", "Lobo",
 //	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
 //	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)}
 //	    {"John", "Doe",
 //	     "Rowing", new Integer(3), new Boolean(true)},
 //	    {"Sue", "Black",
@@ -222,7 +85,8 @@ public class ApplicationView extends JFrame implements View{
 //	     "Pool", new Integer(10), new Boolean(false)}
 	};
 	
-	TableModel model = new DefaultTableModel(data, columnNames) {
+	
+	DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
 	      public Class getColumnClass(int column) {
 	        Class returnValue;
 	        if ((column >= 0) && (column < getColumnCount())) {
@@ -233,7 +97,10 @@ public class ApplicationView extends JFrame implements View{
 	        return returnValue;
 	      }
 	    };
-	final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+	    
+	//Work on sorting later
+//	final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+	
 	JTable table = new JTable();
 	
 	public ApplicationView(){
@@ -250,28 +117,9 @@ public class ApplicationView extends JFrame implements View{
 		//Left Component
 		GridBagConstraints c = new GridBagConstraints();
 		JPanel leftPanel = new JPanel(new GridBagLayout());
-		DefaultListModel<String> model = new DefaultListModel<String>();
-		model.addElement("MOTOR");
-		model.addElement("HOME & PERSONAL ASSETS");		
-		model.addElement("ASSETS ALL RISKS");
-		model.addElement("WORKMEN'S COMPENSATION");
-	    model.addElement("BUSINESS COMBINED");
-		model.addElement("HOME OWNERS LIABILITY");
-		model.addElement("FIDELITY GUARANTEE");
-		model.addElement("PROFESSIONAL INDEMNITY");
-		model.addElement("GOODS IN TRANSIT");
-		model.addElement("EMPLOYER'S LIABIITY");
-		model.addElement("PUBLIC LIABILITY");
-		model.addElement("FOREIGN TRAVEL");
-		model.addElement("PLANT AND MACHINERY");
-		model.addElement("PROFESSIONAL INDEMNITY");
-		model.addElement("FIRE & ALLIED PERILS");
-		model.addElement("HOTEL ALL RISK");
-		model.addElement("FIRE");
-		JList<String> list = new JList<String>(model);
-		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		list.setVisibleRowCount(-1);
-		list.setFont(new Font("Cambria", Font.PLAIN, 14));
+		
+		ListView list;
+		list = createList();
 		JScrollPane listScroller = new JScrollPane(list);
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
@@ -303,7 +151,9 @@ public class ApplicationView extends JFrame implements View{
 //		setSize(1000,400);
 		pack();
 	}
-
+	
+	
+	//Toolbar. Maybe later?
 	private void initToolbar() {
 		
 	}
@@ -333,18 +183,59 @@ public class ApplicationView extends JFrame implements View{
 		return button2;
 	}
 		
+	public ListView createList(){
+		final ListView list = new ListView();
+		list.addListSelectionListener(new ListSelectionListener(){
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				 if (!e.getValueIsAdjusting()){
+					 JList jl = (JList)e.getSource();
+					 String selected = jl.getSelectedValue().toString();
+//					 System.out.println(selected);
+					 switch(selected){
+					 	case "MOTOR": 
+					 		List<Motor> motors = MotorHelper.getInstance().getMotors();
+					 		tableModel.setRowCount(0);
+					 		for(Motor m: motors){
+					 			int i=0;
+					 			//update data object with data from the database
+					 			data[i][0] = m.getId();
+								data[i][1] = m.getInsured();
+								data[i][2] = m.getContact();
+								data[i][3] = m.getEmail();
+								data[i][4] = m.getPostalAddress();
+								data[i][5] = m.getCover();
+								data[i][6] = m.getInsurer();
+								data[i][7] = m.getPolicyNo();
+								data[i][8] = m.getCommencementDate();
+								data[i][9] = m.getExpiryDate();
+								data[i][10] = m.getPremiumCharged();
+								data[i][11] = m.getPaid();
+								data[i][12] = m.getBalance();
+								System.out.println(m.getInsured());
+								tableModel.addRow(data[i]);
+					 			i++;
+					 		}
+					 		tableModel.fireTableDataChanged();					 								 
+					 }					 
+				 }				    				
+			}			
+		});
+		return list;
+	}
 	public JScrollPane createTable(){			
-			  table = new JTable(model);//{  				
+			  table = new JTable(tableModel);//{  				
 //		      public boolean isCellEditable(int row, int column){  			//prevents editing of cells
 //		          return false;  
 //		        }  
 //		      }; 
 		table.getTableHeader().setReorderingAllowed(false);   //prevents reordering of columns
-	    table.setRowSorter(sorter);	    
+//	    table.setRowSorter(sorter);	    
 		table.setFont(new Font("Cambria", Font.PLAIN, 14));
-		
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.setAutoCreateRowSorter(true);		
-//        table.setFillsViewportHeight(true);
+        table.setFillsViewportHeight(true);
         //set Table Column width
         
         TableColumn column = null;
@@ -357,10 +248,13 @@ public class ApplicationView extends JFrame implements View{
                 column.setPreferredWidth(200);
             }
             else if(i == 3){
-            	column.setPreferredWidth(140);
+            	column.setPreferredWidth(130);
             }
             else if(i == 6){
-            	column.setPreferredWidth(60);
+            	column.setPreferredWidth(50);
+            }
+            else if(i ==8 ){
+            	column.setPreferredWidth(95);
             }
             else {
             	column.setPreferredWidth(90);
@@ -381,6 +275,7 @@ public class ApplicationView extends JFrame implements View{
                 int rowindex = table.getSelectedRow();
                 if (rowindex < 0)
                     return;
+                // Right-click Popup
                 if (e.isPopupTrigger() && e.getComponent() instanceof JTable ) {
                     JPopupMenu popup = new JPopupMenu();
                     JMenuItem Edit = new JMenuItem("Edit");                    
@@ -398,6 +293,49 @@ public class ApplicationView extends JFrame implements View{
         });
 //        table.setPreferredSize(arg0)
 //        table.setPreferredScrollableViewportSize(getPreferredSize());
+//        table.getModel().addTableModelListener(new TableModelListener(){
+//
+//			@Override
+//			public void tableChanged(TableModelEvent e) {
+//				int row = e.getFirstRow();
+//				int col = e.getColumn();
+//				TableModel tm = (TableModel)e.getSource();
+//				Object data = tm.getValueAt(row, col);
+////				System.out.println(data.toString());
+//			}
+//        	
+//        });
+//        
+//        table.addKeyListener(new KeyAdapter() {
+//            @Override
+//            public void keyPressed(KeyEvent e) {
+//                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+//
+//                    int row = table.getSelectedRow();
+//                    int column = table.getSelectedColumn();
+//                    System.out.println(row);
+//                   
+//                    
+//                    // resul is the new value to insert in the DB
+//                    String resul = table.getValueAt(row, column).toString();
+//                    // id is the primary key of my DB
+//                    String id = table.getValueAt(row, 0).toString();
+//
+//                    // update is my method to update. Update needs the id for
+//                    // the where clausule. resul is the value that will receive
+//                    // the cell and you need column to tell what to update.
+////                    update(id, resul, column);
+//                   
+//                    System.out.println(resul);
+//                }
+//            }
+//        });
+                
+        String solve = "Enter";
+        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, true);
+        table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter, solve);
+        table.getActionMap().put(solve, enterAction);
+        
         JScrollPane scrollPane = new JScrollPane(table);//, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_ALWAYS);
 //        scrollPane.setPreferredSize(new Dimension(1200,300));
 //        scrollPane.setPreferredSize(table.getPreferredScrollableViewportSize());
@@ -410,12 +348,13 @@ public class ApplicationView extends JFrame implements View{
 		button.addActionListener(new ActionListener() {
 	      public void actionPerformed(ActionEvent e) {
 	        String text = filterText.getText();
-	        if (text.length() == 0) {
-	          sorter.setRowFilter(null);
-	        } else {
-	          sorter.setRowFilter(RowFilter.regexFilter(text));
-	        }
-	      }
+	        //work on filter and sorting 
+//	        if (text.length() == 0) {
+//	          sorter.setRowFilter(null);
+//	        } else {
+//	          sorter.setRowFilter(RowFilter.regexFilter(text));
+//	        }
+	      };
 	    });
 	return button;		
 	}
@@ -469,6 +408,8 @@ public class ApplicationView extends JFrame implements View{
 				int row = table.getSelectedRow();
 				int col = table.getSelectedColumn();	
 				table.editCellAt(row, col);
+				
+//				System.out.println(table.getColumnName(4));
 //			    if (success) {
 //			      boolean toggle = false;
 //			      boolean extend = false;
@@ -496,9 +437,25 @@ public class ApplicationView extends JFrame implements View{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 					((DefaultTableModel) table.getModel()).addRow(new Object[]{});	
-			}
-			
+			}			
 		};
+		
+		enterAction = new AbstractAction(){			
+						
+			@Override
+			public void actionPerformed(ActionEvent e) {
+//				System.out.println("kkk");
+				int row = table.getSelectedRow();
+	            int column = table.getSelectedColumn();
+	            String resul = table.getValueAt(row, column).toString();
+	            
+	            System.out.println(resul);
+			}            
+		};
+				
+//		loadAction = new ActionListener{
+			
+//		}
 	}
 	
 	@Override
@@ -522,10 +479,9 @@ public class ApplicationView extends JFrame implements View{
 		}	
 		return null;
 	}
-
+	
 	@Override
 	public void showWarning(String title, String message) {
 		JOptionPane.showMessageDialog(null, message, title, JOptionPane.WARNING_MESSAGE);		
 	}
 }
-
