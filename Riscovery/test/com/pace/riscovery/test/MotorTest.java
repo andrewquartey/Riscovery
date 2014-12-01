@@ -40,13 +40,20 @@ public class MotorTest {
 		Motor m = new Motor();
 		m.setInsured("Andy");
 		m.setContact("0265324264");
+		m.setEmail("ysetrup@gmail.com");
+		m.setPostalAddress("post");
+		m.setCover("COVER");
+    	m.setInsurer("content[6]");
+    	m.setPolicyNo("content[7]");
+    	m.setCommencmentDate("content[8]");
+    	m.setExpiryDate("TOMORROW");
+    	m.setPremiumCharged(199);
+    	m.setPaid(100);
 		Assert.assertEquals(-1, m.getId());
 		m.save();	
 		                                                                                                                                                                                                                                                                                 
 //		Motor m = new Motor();
-		m.setInsured("Bendo");
-		m.setContact("0245778778");	
-		m.save();
+//		
 		
 				
 		try(Connection con = DBHelper.getConnection();
@@ -60,13 +67,19 @@ public class MotorTest {
 				Assert.assertFalse("Count should not return more than one row", rs.next());
 			}			
 			try(ResultSet rs = stmt.executeQuery("SELECT * FROM Motor")) {
-				Assert.assertTrue("Select should return at least one row", rs.next());
-				
-				Assert.assertEquals("Andy", rs.getString("insured"));
-				
+				Assert.assertTrue("Select should return at least one row", rs.next());				
+				Assert.assertEquals("Andy", rs.getString("insured"));				
 				Assert.assertFalse("Select should not return more than one row", rs.next());
-			}
-			
+			}			
 		}
+		
+		m.setInsured("Bendo");
+		m.setContact("0245778778");	
+		m.save();
+		m.setInsured("King");
+		m.save();
+		
+//		
+		Assert.assertEquals(1, m.getId());
 	}
 }
