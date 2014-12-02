@@ -44,14 +44,14 @@ public class MotorHelper {
 //				System.out.println(m.getId());								
 				m.setEmail(rs.getString("email"));
 				// uncmommeting these statments doesn' produce output in Main why? It was bcos the strings in the parenthesis didnt march the column names in the database
-				m.setPostalAddress(rs.getString("Postal Address"));
+				m.setPostalAddress(rs.getString("PostalAddress"));
 				m.setCover(rs.getString("Cover"));
 				m.setInsurer(rs.getString("Insurer"));
-				m.setPolicyNo(rs.getString("Policy No."));
-				m.setCommencmentDate(rs.getString("Comm. Date"));
-				m.setExpiryDate(rs.getString("Expiry Date"));
-				m.setPremiumCharged(Float.parseFloat(rs.getString("Prem Charged")));
-				m.setPaid(Float.parseFloat(rs.getString("Prem Paid")));
+				m.setPolicyNo(rs.getString("PolicyNo"));
+				m.setCommencmentDate(rs.getString("CommDate"));
+				m.setExpiryDate(rs.getString("ExpiryDate"));
+				m.setPremiumCharged(Float.parseFloat(rs.getString("PremCharged")));
+				m.setPaid(Float.parseFloat(rs.getString("PremPaid")));
 				motors.add(m);  // this adds the Motor object m to motors list
 			}
 		} catch (SQLException e) {
