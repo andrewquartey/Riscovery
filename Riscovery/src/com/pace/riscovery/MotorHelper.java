@@ -47,7 +47,7 @@ public class MotorHelper {
 				m.setPostalAddress(rs.getString("PostalAddress"));
 				m.setCover(rs.getString("Cover"));
 				m.setInsurer(rs.getString("Insurer"));
-				m.setPolicyNo(rs.getString("PolicyNo"));
+				m.setPolicyNo(rs.getString("PolicyNo"));   //it used to be "PolicyNo." and dat created a whole lot of issues
 				m.setCommencmentDate(rs.getString("CommDate"));
 				m.setExpiryDate(rs.getString("ExpiryDate"));
 				m.setPremiumCharged(Float.parseFloat(rs.getString("PremCharged")));

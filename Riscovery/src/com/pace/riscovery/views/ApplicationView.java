@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -45,58 +46,30 @@ public class ApplicationView extends JFrame implements View{
 
 	private static final long serialVersionUID = -7360610421229722456L;
 	
-	Logic logic;
-			    
-	private Action openAction, importAction, exitAction, editAction, addAction, deleteAction, enterAction;
-//	private TableAction ;
-//	private JButton button1, button2;	
+	Logic logic;			    
+	private Action openAction, importAction, exitAction, editAction, addAction, deleteAction, enterAction;	
 	final JTextField filterText = new JTextField(20);	
 	
 	private String[] columnNames = {"NO.", "INSURED", "CONTACT",
-        "EMAIL ADD.", "POSTAL ADD.", "COVER", "INSURER", "POLICY NO",
-        "COMM. DATE", "EXP. DATE", "PREM. CHARGED", "PREM. PAID", "PREM. O/S"
-        };
-	
-	//row contents	
-	private Object[][] data = {
-	    {"1", "Smith",
-	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "Motor", "EIC", "DMC001", "12/10/2014", "17/10/2014",
-	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"2", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	     {"1", "Lobo",
-//	     "0265324264", "yestrup@gmail.com", "P.O. Box GP, 4025 Accra", "House", "NIC", "DMC001", "12/10/2014", "17/10/2014",
-//	     new Double(1200.95), new Double(133.67), new Double(42)},
-//	    {"John", "Doe",
-//	     "Rowing", new Integer(3), new Boolean(true)},
-//	    {"Sue", "Black",
-//	     "Knitting", new Integer(2), new Boolean(false)},
-//	    {"Jane", "White",
-//	     "Speed reading", new Integer(20), new Boolean(true)},
-//	    {"Joe", "Brown",
-//	     "Pool", new Integer(10), new Boolean(false)}
-	};
-	
-	
-	DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
-	      public Class getColumnClass(int column) {
-	        Class returnValue;
-	        if ((column >= 0) && (column < getColumnCount())) {
-	          returnValue = getValueAt(0, column).getClass();
-	        } else {
-	          returnValue = Object.class;
-	        }
-	        return returnValue;
-	      }
-	    };
+	        "EMAIL ADD.", "POSTAL ADD.", "COVER", "INSURER", "POLICY NO",
+	        "COMM. DATE", "EXP. DATE", "PREM. CHARGED", "PREM. PAID", "PREM. O/S"
+	        };
+		
+	private Object[][] data = new Object[1][13];
+//	int dataLength = 1;  //Keeps track of the num of columns
+	 String selected; //what is selected in the list? Motor?? 
+	 
+	DefaultTableModel tableModel = new DefaultTableModel(data, columnNames){
+//		public Class getColumnClass(int column) {
+//		    Class returnValue = null;
+//		    if ((column >= 0) && (column < getColumnCount())) {
+//		      returnValue = getValueAt(0, column).getClass();
+//		    } else {
+//		      returnValue = Object.class;
+//		    }
+//		    return returnValue;
+//		}			
+    };
 	    
 	//Work on sorting later
 //	final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
@@ -104,6 +77,7 @@ public class ApplicationView extends JFrame implements View{
 	JTable table = new JTable();
 	
 	public ApplicationView(){
+		initData();
 		initActions();	
 		initMenu();
 		initToolbar();
@@ -153,7 +127,35 @@ public class ApplicationView extends JFrame implements View{
 	}
 	
 	
-	//Toolbar. Maybe later?
+private void initData() {
+		List<Motor> motors = MotorHelper.getInstance().getMotors();
+		tableModel.setRowCount(0);
+ 		for(Motor m: motors){
+ 			int i=0;
+ 			//update data object with data from the database
+ 			data[i][0] = m.getId();
+			data[i][1] = m.getInsured();
+			data[i][2] = m.getContact();
+			data[i][3] = m.getEmail();
+			data[i][4] = m.getPostalAddress();
+			data[i][5] = m.getCover();
+			data[i][6] = m.getInsurer();
+			data[i][7] = m.getPolicyNo();
+			data[i][8] = m.getCommencementDate();
+			data[i][9] = m.getExpiryDate();
+			data[i][10] = m.getPremiumCharged();
+			data[i][11] = m.getPaid();
+			data[i][12] = m.getBalance();
+			System.out.println(m.getInsured());
+			tableModel.addRow(data[i]);
+ 			i++;
+ 		}
+ 		tableModel.fireTableDataChanged();
+		
+	}
+
+
+		//Toolbar. Maybe later?
 	private void initToolbar() {
 		
 	}
@@ -191,11 +193,12 @@ public class ApplicationView extends JFrame implements View{
 			public void valueChanged(ListSelectionEvent e) {
 				 if (!e.getValueIsAdjusting()){
 					 JList jl = (JList)e.getSource();
-					 String selected = jl.getSelectedValue().toString();
+					 selected = jl.getSelectedValue().toString();
 //					 System.out.println(selected);
 					 switch(selected){
 					 	case "MOTOR": 
 					 		List<Motor> motors = MotorHelper.getInstance().getMotors();
+					 		
 					 		tableModel.setRowCount(0);
 					 		for(Motor m: motors){
 					 			int i=0;
@@ -217,7 +220,8 @@ public class ApplicationView extends JFrame implements View{
 								tableModel.addRow(data[i]);
 					 			i++;
 					 		}
-					 		tableModel.fireTableDataChanged();					 								 
+					 		tableModel.fireTableDataChanged();	
+					 		break;
 					 }					 
 				 }				    				
 			}			
@@ -409,7 +413,7 @@ public class ApplicationView extends JFrame implements View{
 				int col = table.getSelectedColumn();	
 				table.editCellAt(row, col);
 				
-//				System.out.println(table.getColumnName(4));
+				System.out.println(table.getColumnName(4));
 //			    if (success) {
 //			      boolean toggle = false;
 //			      boolean extend = false;
@@ -424,8 +428,17 @@ public class ApplicationView extends JFrame implements View{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {				
 				int selectedRow = table.getSelectedRow();
-				if(selectedRow != -1){
-					((DefaultTableModel) table.getModel()).removeRow(selectedRow);
+				if(selectedRow != -1){					
+					System.out.println(table.getValueAt(selectedRow, 0));					
+					Motor m = new Motor();
+					m.setId((long) table.getValueAt(selectedRow, 0));
+					try {
+						m.delete();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					tableModel.removeRow(selectedRow);
 				}
 			}			
 		};
@@ -436,7 +449,9 @@ public class ApplicationView extends JFrame implements View{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-					((DefaultTableModel) table.getModel()).addRow(new Object[]{});	
+				int i = table.getRowCount()+1;
+				data[0][0] = i;
+				tableModel.addRow(data[0]);					
 			}			
 		};
 		
@@ -444,10 +459,59 @@ public class ApplicationView extends JFrame implements View{
 						
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				System.out.println("kkk");
+				
 				int row = table.getSelectedRow();
-	            int column = table.getSelectedColumn();
-	            String resul = table.getValueAt(row, column).toString();
+	            int col = table.getSelectedColumn();
+	            String resul = table.getValueAt(row, col).toString();
+	            System.out.println(col);
+	            
+	            Motor m = new Motor();
+	            m.setId(row+1);
+	            
+	            switch(String.valueOf(col)){
+	            	case "1":
+	            		m.setInsured(resul);
+	            		break;
+	            	case "2":
+	            		m.setContact(resul);
+	            		break;
+	            	case "3":
+	            		m.setEmail(resul);
+	            		break;
+	            	case "4":
+	            		m.setPostalAddress(resul);
+	            		break;
+	            	case "5":
+	            		m.setCover(resul);
+	            		break;
+	            	case "6":
+	            		m.setInsurer(resul);
+	            		break;
+	            	case "7":
+	            		m.setPolicyNo(resul);
+	            		break;
+	            	case "8":
+	            		m.setCommencmentDate(resul);
+	            		break;
+	            	case "9":
+	            		m.setExpiryDate(resul);
+	            		break;
+	            	case "10":
+	            		m.setPremiumCharged(Float.valueOf(resul));
+	            		break;
+	            	case "11":
+	            		m.setPaid(Float.valueOf(resul));
+	            		break;
+	            	default:
+	            		System.out.println("nothing happend when enter was pressed");
+	            }
+	         
+	            try {
+					m.save();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 	            
 	            System.out.println(resul);
 			}            

@@ -15,7 +15,7 @@ import com.mysql.jdbc.Statement;
 
 public class Motor {
 	
-	private int id = -1;  // if an id is -1 it means entry does not exit so then we save rather than update
+	private long id = -1;  // if an id is -1 it means entry does not exit so then we save rather than update
 	private  String insured;
 	private  String contact;
 	private  String email;
@@ -28,7 +28,7 @@ public class Motor {
 	private  float premiumCharged;
 	private  float paid;
 	
-	public void setId(int id){
+	public void setId(long id){
 		this.id = id;
 	}
 	
@@ -175,7 +175,7 @@ public class Motor {
 					pstmt.setString(9, expiryDate);
 					pstmt.setFloat(10, premiumCharged);
 					pstmt.setFloat(11, paid);
-					pstmt.setInt(12, id);
+					pstmt.setLong(12, id);
 					pstmt.execute();
  				}
  			}
@@ -184,5 +184,12 @@ public class Motor {
 
  	public void delete() throws SQLException {
  		//TODO: work on this next!!
+ 		try(Connection connection = DBHelper.getConnection()){
+ 			String sql = "DELETE FROM Motor WHERE idMotor=?"; 			
+ 			try(PreparedStatement pstmt = connection.prepareStatement(sql)) {
+ 				pstmt.setLong(1, id);
+				pstmt.execute();
+ 			}
+ 		}
  	}
 }

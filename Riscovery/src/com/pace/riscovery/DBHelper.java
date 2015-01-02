@@ -54,6 +54,5 @@ public class DBHelper {
 		con = getInstance().getDataSource().getConnection();
 //		System.out.print("here!");
 		return con;
-	}
-	
+	}	
 }
