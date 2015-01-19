@@ -19,7 +19,7 @@ public class HomeOwners {
 	private  String expiryDate;
 	private  float premiumCharged;
 	private  float paid;
-	private  float balance;
+//	private  float balance;
 
 
 	public void setInsured(String insured){
