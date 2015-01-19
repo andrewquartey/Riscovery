@@ -1,5 +1,6 @@
 package com.pace.riscovery;
 
+import java.awt.SplashScreen;
 import java.sql.SQLException;
 
 import javax.swing.JFrame;
@@ -13,6 +14,7 @@ import com.pace.riscovery.views.ApplicationView;
 import com.pace.riscovery.views.DueDates;
 
 public class Main {
+	
 	public static void main(String[] args) throws SQLException{
 		
 		DBHelper.getInstance().init();		
@@ -26,6 +28,24 @@ public class Main {
 			e.printStackTrace();
 		}
 		
+		  
+        final SplashScreen splash = SplashScreen.getSplashScreen();
+        if (splash == null) {
+            System.out.println("SplashScreen.getSplashScreen() returned null");
+            return;
+        }
+        
+        
+        for(int i=0; i<1000; i++) {            
+            try {
+                Thread.sleep(2);
+            }
+            catch(InterruptedException e) {
+            }
+        }
+        
+        splash.close();        
+	    
 		SwingUtilities.invokeLater(new Runnable(){
 			@Override
 			public void run(){				
@@ -49,7 +69,7 @@ public class Main {
 //						Runnable n = new NotifyRunnable();
 //						Thread myThread = new Thread(n);
 //						myThread.start();
-						Notification n = new Notification();
+						Notification n = Notification.getInstance();
 						for(;;){
 							if(!DueDates.model.isEmpty()){
 								n.display();
