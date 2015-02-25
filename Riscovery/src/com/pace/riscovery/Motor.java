@@ -15,7 +15,7 @@ import com.mysql.jdbc.Statement;
 
 public class Motor {
 	
-	private long id = -1;  // if an id is -1 it means entry does not exit so then we save rather than update
+	private  int id = -1;  // if an id is -1 it means entry does not exit so then we save rather than update
 	private  String insured;
 	private  String contact;
 	private  String email;
@@ -28,7 +28,7 @@ public class Motor {
 	private  float premiumCharged;
 	private  float paid;
 	
-	public void setId(long id){
+	public void setId(int id){
 		this.id = id;
 	}
 	
@@ -74,10 +74,9 @@ public class Motor {
 
 	public void setPaid(float paid){
 		this.paid = paid;
-	}
-		
+	}		
 
-	public long getId(){
+	public int getId(){
 		return id;
 	}
 
@@ -152,10 +151,10 @@ public class Motor {
 //						pstmt.close();
 												
 						// This code is generating keys
-						try(ResultSet rs = pstmt.getGeneratedKeys()) {
-							rs.next();
-							id = rs.getInt(1);							
-						}
+//						try(ResultSet rs = pstmt.getGeneratedKeys()) {
+//							rs.next();
+//							id = rs.getInt(1);							
+//						}
 				}
  			} 			
  			else {
@@ -175,7 +174,7 @@ public class Motor {
 					pstmt.setString(9, expiryDate);
 					pstmt.setFloat(10, premiumCharged);
 					pstmt.setFloat(11, paid);
-					pstmt.setLong(12, id);
+					pstmt.setInt(12, id);
 					pstmt.execute();
  				}
  			}
@@ -185,11 +184,18 @@ public class Motor {
  	public void delete() throws SQLException {
  		//TODO: work on this next!!
  		try(Connection connection = DBHelper.getConnection()){
- 			String sql = "DELETE FROM Motor WHERE idMotor=?"; 			
+ 			String sql = "DELETE FROM Motor WHERE idMotor=?"; 						
  			try(PreparedStatement pstmt = connection.prepareStatement(sql)) {
- 				pstmt.setLong(1, id);
-				pstmt.execute();
+ 				pstmt.setInt(1, id);
+				pstmt.execute();				
  			}
+// 			sql = "ALTER TABLE Motor AUTO_INCREMENT = 1";
+//			try(PreparedStatement pstmt = connection.prepareStatement(sql)) {				
+//				pstmt.execute();				
+//			}
+// 			String sql2 = "SELECT COUNT(*) FROM Motor";
+//			try(PreparedStatement pstmt = connection.prepareStatement(sql2)) {	 				
+//				pstmt.execute();
  		}
  	}
 }

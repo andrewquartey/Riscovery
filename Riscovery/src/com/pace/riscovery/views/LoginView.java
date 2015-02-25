@@ -25,7 +25,6 @@ public class LoginView extends JDialog{
 	private JPasswordField password;
 	private JLabel usernameLabel, passwordLabel;
 	private JButton login, cancel;
-	private boolean succeeded;
 	static JFrame frame = new JFrame();
 	
 	public LoginView(){		

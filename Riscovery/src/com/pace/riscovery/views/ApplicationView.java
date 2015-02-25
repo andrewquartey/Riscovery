@@ -46,8 +46,9 @@ public class ApplicationView extends JFrame implements View{
 
 	private static final long serialVersionUID = -7360610421229722456L;
 	
-	Logic logic;			    
-	private Action openAction, importAction, exitAction, editAction, addAction, deleteAction, enterAction;	
+	Logic logic;			  
+	JFrame ApplicationView = this; //this allows me to reference "this" from inner classes
+	private Action openAction, importAction, exportAction, exitAction, editAction, addAction, deleteAction, enterAction;	
 	final JTextField filterText = new JTextField(20);	
 	
 	private String[] columnNames = {"NO.", "INSURED", "CONTACT",
@@ -60,6 +61,11 @@ public class ApplicationView extends JFrame implements View{
 	 String selected; //what is selected in the list? Motor?? 
 	 
 	DefaultTableModel tableModel = new DefaultTableModel(data, columnNames){
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4447081087168035853L;
 //		public Class getColumnClass(int column) {
 //		    Class returnValue = null;
 //		    if ((column >= 0) && (column < getColumnCount())) {
@@ -192,7 +198,7 @@ private void initData() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				 if (!e.getValueIsAdjusting()){
-					 JList jl = (JList)e.getSource();
+					 JList<String> jl = (JList)e.getSource();
 					 selected = jl.getSelectedValue().toString();
 //					 System.out.println(selected);
 					 switch(selected){
@@ -335,10 +341,16 @@ private void initData() {
 //            }
 //        });
                 
-        String solve = "Enter";
+        String ENTER = "Enter";
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, true);
-        table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter, solve);
-        table.getActionMap().put(solve, enterAction);
+        table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter, ENTER);
+        table.getActionMap().put(ENTER, enterAction);
+        
+        //this allows user to delete a row by pressing the delete button
+        String DELETE = "Delete";
+        KeyStroke del = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+        table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(del, DELETE);
+        table.getActionMap().put(DELETE, deleteAction);
         
         JScrollPane scrollPane = new JScrollPane(table);//, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_ALWAYS);
 //        scrollPane.setPreferredSize(new Dimension(1200,300));
@@ -351,7 +363,7 @@ private void initData() {
 		JButton button = new JButton("Filter");
 		button.addActionListener(new ActionListener() {
 	      public void actionPerformed(ActionEvent e) {
-	        String text = filterText.getText();
+//	        String text = filterText.getText();
 	        //work on filter and sorting 
 //	        if (text.length() == 0) {
 //	          sorter.setRowFilter(null);
@@ -375,6 +387,7 @@ private void initData() {
 //			menuBar.add(openAction);
 		file.add(openAction);
 		file.add(importAction);
+		file.add(exportAction);
 		file.add(exitAction);
 	}
 	
@@ -387,11 +400,28 @@ private void initData() {
 			@Override
 			//This is executed when menuItem1 is clicked
 			public void actionPerformed(ActionEvent e) {   
-				getLogic().onOpen();
+//				getLogic().onOpen();
 				}
 		};
 		
 		exitAction = new AbstractAction("Exit"){
+			private static final long serialVersionUID = -4268592738971814249L;
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				ApplicationView.dispose();				
+			}			
+		};
+		
+		importAction = new AbstractAction("Import..."){
+			private static final long serialVersionUID = -4268592738971814249L;
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				getLogic().onOpen();			
+			}			
+		};
+		exportAction = new AbstractAction("Export..."){
 			private static final long serialVersionUID = -4268592738971814249L;
 
 			@Override
@@ -426,37 +456,74 @@ private void initData() {
 			
 			private static final long serialVersionUID = -2465981498379904234L;
 			@Override
-			public void actionPerformed(ActionEvent arg0) {				
+			public void actionPerformed(ActionEvent arg0) {		
+				//code for JOptionPane "are you sure you want to delete" goes here 
+				
+				System.out.println("deleteAction");
 				int selectedRow = table.getSelectedRow();
 				if(selectedRow != -1){					
-					System.out.println(table.getValueAt(selectedRow, 0));					
-					Motor m = new Motor();
-					m.setId((long) table.getValueAt(selectedRow, 0));
+					System.out.println(table.getValueAt(selectedRow, 0));	
+					System.out.println("rows before del = " + table.getRowCount());
+					Motor m = new Motor();  //Continue from here!!
+					m.setId((int)table.getValueAt(selectedRow, 0));
 					try {
 						m.delete();
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					System.out.println("rows after del = " + table.getRowCount());
+					
 					tableModel.removeRow(selectedRow);
+					//try to let the id renumber starting from right after the selectedRow till the end and then update database with new values
+					if(selectedRow != table.getRowCount()){
+						for(int i=selectedRow; i<table.getRowCount();i++){
+							table.setValueAt(i+1, i, 0);
+							Motor motor = ((Motor) MotorHelper.getInstance().getMotors().get(i));
+							motor.setId(i+1);
+							try {
+								motor.save();
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}										
 				}
 			}			
 		};
 		
+		
+		//done
 		addAction = new AbstractAction(){
-
 			private static final long serialVersionUID = -6007734049543677139L;
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				int i = table.getRowCount()+1;
-				data[0][0] = i;
-				tableModel.addRow(data[0]);					
+//				data[0][0] = i;
+				tableModel.addRow(new Object[] { i, "", "",
+		                "", "", "", "", "", "",
+		                "", "", "", ""});				
+				//code to update database with row id goes here				
+				Motor m = new Motor();
+//				m.setId(i);
+				try {
+					m.save();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//code to restrict adding of new row unless previous row is filled goes here
 			}			
 		};
 		
-		enterAction = new AbstractAction(){			
-						
+		enterAction = new AbstractAction(){								
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 5551019514160657094L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
@@ -465,9 +532,11 @@ private void initData() {
 	            String resul = table.getValueAt(row, col).toString();
 	            System.out.println(col);
 	            
-	            Motor m = new Motor();
-	            m.setId(row+1);
-	            
+	            //we have to get row details from database so that when we update the cell, all other cells 
+	            // will be intact 
+	            List<Motor> motors = MotorHelper.getInstance().getMotors();
+	            Motor m = motors.get(row);
+	         	         
 	            switch(String.valueOf(col)){
 	            	case "1":
 	            		m.setInsured(resul);
@@ -508,6 +577,7 @@ private void initData() {
 	         
 	            try {
 					m.save();
+					System.out.println(resul);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

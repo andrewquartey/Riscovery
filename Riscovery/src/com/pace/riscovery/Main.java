@@ -32,19 +32,19 @@ public class Main {
         final SplashScreen splash = SplashScreen.getSplashScreen();
         if (splash == null) {
             System.out.println("SplashScreen.getSplashScreen() returned null");
-            return;
+//            return;
         }
         
-        
-        for(int i=0; i<1000; i++) {            
-            try {
-                Thread.sleep(2);
-            }
-            catch(InterruptedException e) {
-            }
+        else{
+	        for(int i=0; i<1000; i++) {            
+	            try {
+	                Thread.sleep(2);
+	            }
+	            catch(InterruptedException e) {
+	            }
+	        }	        
+	        splash.close();  	
         }
-        
-        splash.close();        
 	    
 		SwingUtilities.invokeLater(new Runnable(){
 			@Override

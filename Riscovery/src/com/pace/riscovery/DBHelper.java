@@ -13,7 +13,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 public class DBHelper {
 	
 	private static DBHelper INSTANCE = new DBHelper();   // A singleton class is a class which has it's constrcutor 
-														 // as private and so creates objects throuh a get instance
+														 // as private and so creates objects through a get instance
 	public static DBHelper getInstance(){				 // method
 		return DBHelper.INSTANCE;
 	}
