@@ -468,27 +468,33 @@ private void initData() {
 					m.setId((int)table.getValueAt(selectedRow, 0));
 					try {
 						m.delete();
+						m.setId(selectedRow+1);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}							
+		
+				tableModel.removeRow(selectedRow);
+				System.out.println("rows after del = " + table.getRowCount());
+				//try to let the id renumber starting from right after the selectedRow till the end and then update database with new values
+					
+				for(int i=selectedRow; i<table.getRowCount();i++){
+					table.setValueAt(i+1, i, 0);
+					Motor motor = ((Motor) MotorHelper.getInstance().getMotors().get(i));
+					motor.setId(i+1);
+					try {
+						motor.save();						
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					System.out.println("rows after del = " + table.getRowCount());
-					
-					tableModel.removeRow(selectedRow);
-					//try to let the id renumber starting from right after the selectedRow till the end and then update database with new values
-					if(selectedRow != table.getRowCount()){
-						for(int i=selectedRow; i<table.getRowCount();i++){
-							table.setValueAt(i+1, i, 0);
-							Motor motor = ((Motor) MotorHelper.getInstance().getMotors().get(i));
-							motor.setId(i+1);
-							try {
-								motor.save();
-							} catch (SQLException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-					}										
+					System.out.println("\n\n");
+				}
+				List motors = MotorHelper.getInstance().getMotors();
+				for(int i=0;i<motors.size();i++){
+					Motor m1 = (Motor) motors.get(i);
+					System.out.println(m1.getId() + "\t" + m1.getInsured());
+					}
 				}
 			}			
 		};

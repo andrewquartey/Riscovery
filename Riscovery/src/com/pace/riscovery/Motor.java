@@ -8,7 +8,6 @@ package com.pace.riscovery;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.mysql.jdbc.Statement;
@@ -133,7 +132,7 @@ public class Motor {
  		try(Connection connection = DBHelper.getConnection()){
  			if(id == -1){
 		 		String sql = "INSERT INTO Motor VALUES (default, ?,?,?,?,?,?,?,?,?,?,?)";								
-					try(PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {//generated id will be useful in this code
+					try(PreparedStatement pstmt = connection.prepareStatement(sql)){//, Statement.RETURN_GENERATED_KEYS)) {//generated id will be useful in this code
 					
 						pstmt.setString(1, insured);
 						pstmt.setString(2, contact);
