@@ -464,15 +464,18 @@ private void initData() {
 				if(selectedRow != -1){					
 					System.out.println(table.getValueAt(selectedRow, 0));	
 					System.out.println("rows before del = " + table.getRowCount());
-					Motor m = new Motor();  //Continue from here!!
+					Motor m = new Motor(); 
+					//set the id of the new motor to that of the deleted row
 					m.setId((int)table.getValueAt(selectedRow, 0));
 					try {
 						m.delete();
-						m.setId(selectedRow+1);
+//						m.setId(selectedRow+1); //reduntant code
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}							
+					}						
+					System.out.println("Value at  selectedRow = " + (int)table.getValueAt(selectedRow, 0) +
+											"\nselectedRow = " + selectedRow + "\n");
 		
 				tableModel.removeRow(selectedRow);
 				System.out.println("rows after del = " + table.getRowCount());
